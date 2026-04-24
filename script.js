@@ -25,8 +25,10 @@ const taskList = document.getElementById('task-list');
 const settingsToggleBtn = document.getElementById('settings-toggle-btn');
 const settingsModal = document.getElementById('settings-modal');
 const settingsCloseBtn = document.getElementById('settings-close-btn');
+const autoSwitchToggle = document.getElementById('auto-switch-toggle');
 
 let tasks = [];
+let autoSwitch = true;
 
 function formatTime(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -102,7 +104,11 @@ function switchMode() {
 
 function tick() {
   if (timeRemaining === 0) {
-    switchMode();
+    if (autoSwitch) {
+      switchMode();
+    } else {
+      pause();
+    }
   } else {
     timeRemaining -= 1;
   }
@@ -157,6 +163,9 @@ function applySettings() {
 workInput.addEventListener('change', applySettings);
 breakInput.addEventListener('change', applySettings);
 longBreakInput.addEventListener('change', applySettings);
+autoSwitchToggle.addEventListener('change', () => {
+  autoSwitch = autoSwitchToggle.checked;
+});
 
 tabWork.addEventListener('click', () => setMode('work'));
 tabBreak.addEventListener('click', () => setMode('break'));
