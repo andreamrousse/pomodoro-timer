@@ -120,13 +120,46 @@ body {
   transition: color 0.4s ease;
 }
 
-/* Session count */
-.session-count {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+/* Session tracker */
+.session-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.session-dots {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.session-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background-color: var(--color-text-muted);
+  opacity: 0.3;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.session-dot.is-complete {
+  opacity: 1;
+}
+
+#app[data-mode="work"] .session-dot.is-complete,
+#app[data-mode="break"] .session-dot.is-complete {
+  background-color: var(--color-work);
+}
+
+#app[data-mode="long-break"] .session-dot.is-complete {
+  background-color: var(--color-accent);
+}
+
+.session-total {
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text-muted);
+  letter-spacing: 0.08em;
 }
 
 /* Mode-based accents — driven by data-mode on #app */

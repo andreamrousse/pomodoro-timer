@@ -29,7 +29,8 @@ const settingsToggleBtn = document.getElementById('settings-toggle-btn');
 const settingsModal = document.getElementById('settings-modal');
 const settingsCloseBtn = document.getElementById('settings-close-btn');
 const autoSwitchToggle = document.getElementById('auto-switch-toggle');
-const sessionCountEl = document.getElementById('session-count');
+const sessionDotsEl = document.getElementById('session-dots');
+const sessionTotalEl = document.getElementById('session-total');
 
 let tasks = [];
 let autoSwitch = true;
@@ -97,7 +98,15 @@ function render() {
   activeTab.classList.add('is-active');
   activeTab.setAttribute('aria-selected', 'true');
 
-  sessionCountEl.textContent = `Sessions: ${sessionCount}`;
+  const cyclePosition = sessionCount % 4;
+  sessionDotsEl.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'session-dot' + (i < cyclePosition ? ' is-complete' : '');
+    dot.setAttribute('aria-hidden', 'true');
+    sessionDotsEl.appendChild(dot);
+  }
+  sessionTotalEl.textContent = sessionCount === 1 ? '1 session' : `${sessionCount} sessions`;
 }
 
 function playNotification() {
@@ -137,9 +146,13 @@ function setMode(mode) {
 function switchMode() {
   playNotification();
   flashBackground();
-  if (currentMode === 'work') sessionCount += 1;
-  // auto-switch only toggles between work and short break
-  currentMode = currentMode === 'work' ? 'break' : 'work';
+  if (currentMode === 'work') {
+    sessionCount += 1;
+    // every 4th completed session triggers a long break
+    currentMode = sessionCount % 4 === 0 ? 'long-break' : 'break';
+  } else {
+    currentMode = 'work';
+  }
   timeRemaining = durationFor(currentMode);
   saveToStorage();
 }

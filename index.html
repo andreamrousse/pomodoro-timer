@@ -22,7 +22,10 @@
           <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
           <button type="button" class="btn btn-secondary btn-icon" id="settings-toggle-btn" aria-label="Toggle settings" aria-expanded="false">⚙</button>
         </div>
-        <p class="session-count" id="session-count">Sessions: 0</p>
+        <div class="session-tracker">
+          <div class="session-dots" id="session-dots" aria-label="Session progress"></div>
+          <p class="session-total" id="session-total">0 sessions</p>
+        </div>
       </section>
       <section class="task-panel" aria-label="Task list">
         <h2 class="task-panel-title">Tasks</h2>
