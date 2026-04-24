@@ -31,7 +31,17 @@ function render() {
   startPauseBtn.textContent = isRunning ? 'Pause' : 'Start';
 }
 
+function flashBackground() {
+  document.body.classList.remove('flash');
+  void document.body.offsetWidth; // force reflow so the animation replays
+  document.body.classList.add('flash');
+  document.body.addEventListener('animationend', () => {
+    document.body.classList.remove('flash');
+  }, { once: true });
+}
+
 function switchMode() {
+  flashBackground();
   currentMode = currentMode === 'work' ? 'break' : 'work';
   timeRemaining = durationFor(currentMode);
 }

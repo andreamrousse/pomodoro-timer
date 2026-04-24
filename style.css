@@ -194,3 +194,14 @@ body {
   outline-offset: 2px;
   border-color: var(--color-accent);
 }
+
+/* Animations */
+@keyframes flash {
+  0%   { background-color: var(--color-bg); }
+  20%  { background-color: var(--color-surface); }
+  100% { background-color: var(--color-bg); }
+}
+
+body.flash {
+  animation: flash 0.6s ease-out;
+}
