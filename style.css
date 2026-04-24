@@ -63,6 +63,14 @@ body {
   gap: var(--space-lg);
 }
 
+/* Card stack — stretches all child cards to the same width */
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-lg);
+}
+
 /* Timer card */
 .timer {
   display: flex;
