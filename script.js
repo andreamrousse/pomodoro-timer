@@ -58,7 +58,9 @@ function loadFromStorage() {
   if (data.breakDuration) breakDuration = data.breakDuration;
   if (data.longBreakDuration) longBreakDuration = data.longBreakDuration;
   if (typeof data.autoSwitch === 'boolean') autoSwitch = data.autoSwitch;
-  if (Array.isArray(data.tasks)) tasks = data.tasks;
+  if (Array.isArray(data.tasks)) {
+    tasks = data.tasks.map(t => (typeof t === 'string' ? { text: t, done: false } : t));
+  }
   if (typeof data.sessionCount === 'number') sessionCount = data.sessionCount;
 
   workInput.value = workDuration / 60;
@@ -280,15 +282,28 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+function toggleTask(index) {
+  tasks[index].done = !tasks[index].done;
+  renderTasks();
+  saveToStorage();
+}
+
 function renderTasks() {
   taskList.innerHTML = '';
-  tasks.forEach((text, index) => {
+  tasks.forEach((task, index) => {
     const li = document.createElement('li');
     li.className = 'task-item';
 
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'task-checkbox';
+    checkbox.checked = task.done;
+    checkbox.setAttribute('aria-label', 'Mark task complete');
+    checkbox.addEventListener('change', () => toggleTask(index));
+
     const span = document.createElement('span');
-    span.className = 'task-item-text';
-    span.textContent = text;
+    span.className = 'task-item-text' + (task.done ? ' is-done' : '');
+    span.textContent = task.text;
 
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
@@ -297,6 +312,7 @@ function renderTasks() {
     removeBtn.textContent = '×';
     removeBtn.addEventListener('click', () => removeTask(index));
 
+    li.appendChild(checkbox);
     li.appendChild(span);
     li.appendChild(removeBtn);
     taskList.appendChild(li);
@@ -306,7 +322,7 @@ function renderTasks() {
 function addTask() {
   const text = taskInput.value.trim();
   if (!text) return;
-  tasks.push(text);
+  tasks.push({ text, done: false });
   taskInput.value = '';
   renderTasks();
   saveToStorage();
