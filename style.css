@@ -205,6 +205,104 @@ body {
   border-color: var(--color-accent);
 }
 
+/* Task panel */
+.task-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  min-width: 16rem;
+}
+
+.task-panel-title {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.task-input-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.task-input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-text-muted);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color 0.15s ease;
+}
+
+.task-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.task-input:hover {
+  border-color: var(--color-text);
+}
+
+.task-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+}
+
+.task-item-text {
+  flex: 1;
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.task-remove-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 var(--space-xs);
+  transition: color 0.15s ease;
+}
+
+.task-remove-btn:hover {
+  color: var(--color-work);
+}
+
+.task-remove-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
 /* Animations */
 @keyframes flash {
   0%   { background-color: var(--color-bg); }

@@ -13,6 +13,11 @@ const startPauseBtn = document.getElementById('start-pause-btn');
 const resetBtn = document.getElementById('reset-btn');
 const workInput = document.getElementById('work-duration-input');
 const breakInput = document.getElementById('break-duration-input');
+const taskInput = document.getElementById('task-input');
+const addTaskBtn = document.getElementById('add-task-btn');
+const taskList = document.getElementById('task-list');
+
+let tasks = [];
 
 function formatTime(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -119,5 +124,46 @@ function applySettings() {
 
 workInput.addEventListener('change', applySettings);
 breakInput.addEventListener('change', applySettings);
+
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach((text, index) => {
+    const li = document.createElement('li');
+    li.className = 'task-item';
+
+    const span = document.createElement('span');
+    span.className = 'task-item-text';
+    span.textContent = text;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'task-remove-btn';
+    removeBtn.setAttribute('aria-label', `Remove task: ${text}`);
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', () => removeTask(index));
+
+    li.appendChild(span);
+    li.appendChild(removeBtn);
+    taskList.appendChild(li);
+  });
+}
+
+function addTask() {
+  const text = taskInput.value.trim();
+  if (!text) return;
+  tasks.push(text);
+  taskInput.value = '';
+  renderTasks();
+}
+
+function removeTask(index) {
+  tasks.splice(index, 1);
+  renderTasks();
+}
+
+addTaskBtn.addEventListener('click', addTask);
+taskInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') addTask();
+});
 
 render();
