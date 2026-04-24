@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="app" data-mode="work">
+      <section class="timer" aria-label="Pomodoro timer">
+        <p class="mode-indicator" id="mode-indicator">Work</p>
+        <time class="time-display" id="time-display" datetime="PT25M00S">25:00</time>
+        <div class="controls">
+          <button type="button" class="btn btn-primary" id="start-pause-btn">Start</button>
+          <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
