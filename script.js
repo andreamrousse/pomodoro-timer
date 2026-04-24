@@ -25,7 +25,8 @@ const allTabs = [tabWork, tabBreak, tabLongBreak];
 const taskInput = document.getElementById('task-input');
 const addTaskBtn = document.getElementById('add-task-btn');
 const taskList = document.getElementById('task-list');
-const taskCount = document.getElementById('task-count');
+const taskCountPending = document.getElementById('task-count-pending');
+const taskCountDone = document.getElementById('task-count-done');
 const settingsToggleBtn = document.getElementById('settings-toggle-btn');
 const settingsModal = document.getElementById('settings-modal');
 const settingsCloseBtn = document.getElementById('settings-close-btn');
@@ -340,7 +341,12 @@ const SVG_SQUARE_CHECK = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 
 function renderTasks() {
   taskList.innerHTML = '';
-  taskCount.textContent = tasks.length;
+  const pendingCount = tasks.filter(t => !t.done).length;
+  const doneCount = tasks.filter(t => t.done).length;
+  taskCountPending.textContent = pendingCount === 1 ? '1 pending' : `${pendingCount} pending`;
+  taskCountDone.textContent = doneCount === 1 ? '1 done' : `${doneCount} done`;
+  taskCountPending.hidden = tasks.length === 0;
+  taskCountDone.hidden = doneCount === 0;
   tasks.forEach((task, index) => {
     const li = document.createElement('li');
     li.className = 'task-item' + (task.done ? ' is-done' : '');

@@ -13,6 +13,12 @@
   </head>
   <body>
     <div id="app" data-mode="work">
+      <div class="app-title">
+        <span class="app-title-icon">🍅</span>
+        <div class="app-title-text">
+          <h1 class="app-title-name">Pomodorino</h1>
+        </div>
+      </div>
       <div class="card-stack">
       <section class="timer" aria-label="Pomodoro timer">
         <div class="mode-tabs" role="tablist" aria-label="Timer mode">
@@ -35,7 +41,10 @@
       <section class="task-panel" aria-label="Task list">
         <div class="task-panel-header">
           <h2 class="task-panel-title">Tasks</h2>
-          <span class="task-count" id="task-count">0</span>
+          <div class="task-counts">
+            <span class="task-count task-count--pending" id="task-count-pending" hidden>0 pending</span>
+            <span class="task-count task-count--done" id="task-count-done" hidden>0 done</span>
+          </div>
         </div>
         <div class="task-input-row">
           <input class="task-input" type="text" id="task-input"
