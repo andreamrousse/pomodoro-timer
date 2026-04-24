@@ -308,7 +308,7 @@ function renderTasks() {
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.className = 'task-remove-btn';
-    removeBtn.setAttribute('aria-label', `Remove task: ${text}`);
+    removeBtn.setAttribute('aria-label', `Remove task: ${task.text}`);
     removeBtn.textContent = '×';
     removeBtn.addEventListener('click', () => removeTask(index));
 
