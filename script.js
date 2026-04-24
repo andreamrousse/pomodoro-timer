@@ -29,9 +29,44 @@ const settingsToggleBtn = document.getElementById('settings-toggle-btn');
 const settingsModal = document.getElementById('settings-modal');
 const settingsCloseBtn = document.getElementById('settings-close-btn');
 const autoSwitchToggle = document.getElementById('auto-switch-toggle');
+const sessionCountEl = document.getElementById('session-count');
 
 let tasks = [];
 let autoSwitch = true;
+let sessionCount = 0;
+
+const STORAGE_KEY = 'pomodoro-settings';
+
+function saveToStorage() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    workDuration,
+    breakDuration,
+    longBreakDuration,
+    autoSwitch,
+    tasks,
+    sessionCount,
+  }));
+}
+
+function loadFromStorage() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  const data = JSON.parse(raw);
+
+  if (data.workDuration) workDuration = data.workDuration;
+  if (data.breakDuration) breakDuration = data.breakDuration;
+  if (data.longBreakDuration) longBreakDuration = data.longBreakDuration;
+  if (typeof data.autoSwitch === 'boolean') autoSwitch = data.autoSwitch;
+  if (Array.isArray(data.tasks)) tasks = data.tasks;
+  if (typeof data.sessionCount === 'number') sessionCount = data.sessionCount;
+
+  workInput.value = workDuration / 60;
+  breakInput.value = breakDuration / 60;
+  longBreakInput.value = longBreakDuration / 60;
+  autoSwitchToggle.checked = autoSwitch;
+
+  timeRemaining = workDuration;
+}
 
 function formatTime(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -61,6 +96,8 @@ function render() {
   const activeTab = tabForMode[currentMode];
   activeTab.classList.add('is-active');
   activeTab.setAttribute('aria-selected', 'true');
+
+  sessionCountEl.textContent = `Sessions: ${sessionCount}`;
 }
 
 function playNotification() {
@@ -100,9 +137,11 @@ function setMode(mode) {
 function switchMode() {
   playNotification();
   flashBackground();
+  if (currentMode === 'work') sessionCount += 1;
   // auto-switch only toggles between work and short break
   currentMode = currentMode === 'work' ? 'break' : 'work';
   timeRemaining = durationFor(currentMode);
+  saveToStorage();
 }
 
 function tick() {
@@ -170,6 +209,7 @@ function applySettings() {
     timeRemaining = durationFor(currentMode);
     render();
   }
+  saveToStorage();
 }
 
 workInput.addEventListener('change', applySettings);
@@ -177,6 +217,7 @@ breakInput.addEventListener('change', applySettings);
 longBreakInput.addEventListener('change', applySettings);
 autoSwitchToggle.addEventListener('change', () => {
   autoSwitch = autoSwitchToggle.checked;
+  saveToStorage();
 });
 
 tabWork.addEventListener('click', () => setMode('work'));
@@ -237,11 +278,13 @@ function addTask() {
   tasks.push(text);
   taskInput.value = '';
   renderTasks();
+  saveToStorage();
 }
 
 function removeTask(index) {
   tasks.splice(index, 1);
   renderTasks();
+  saveToStorage();
 }
 
 addTaskBtn.addEventListener('click', addTask);
@@ -249,4 +292,6 @@ taskInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') addTask();
 });
 
+loadFromStorage();
+renderTasks();
 render();

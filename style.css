@@ -120,6 +120,15 @@ body {
   transition: color 0.4s ease;
 }
 
+/* Session count */
+.session-count {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
 /* Mode-based accents — driven by data-mode on #app */
 #app[data-mode="work"] .mode-indicator,
 #app[data-mode="work"] .time-display {
