@@ -20,6 +20,7 @@
 
 
 ## Could have
+- task list
 - music sound when the time is running 
 - Session tracking
 - Persist with localStorage

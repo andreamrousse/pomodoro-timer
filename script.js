@@ -95,6 +95,7 @@ function render() {
   modeIndicator.textContent = modeLabels[currentMode];
   app.dataset.mode = currentMode;
   startPauseBtn.textContent = isRunning ? 'Pause' : 'Start';
+  resetBtn.disabled = !isRunning && timeRemaining === durationFor(currentMode);
 
   allTabs.forEach(tab => {
     tab.classList.remove('is-active');

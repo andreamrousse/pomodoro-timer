@@ -88,12 +88,6 @@ body {
   letter-spacing: -0.01em;
 }
 
-.app-title-sub {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  font-weight: 500;
-  margin-top: 0.1rem;
-}
 
 /* Card stack — stretches all child cards to the same width */
 .card-stack {
@@ -112,6 +106,8 @@ body {
   padding: var(--space-xl);
   background-color: var(--color-card);
   border-radius: var(--radius-lg);
+  border: 1px solid rgba(92, 56, 40, 0.07);
+  box-shadow: 0 2px 16px rgba(92, 56, 40, 0.07);
   min-width: 16rem;
 }
 
@@ -119,31 +115,50 @@ body {
 .mode-tabs {
   display: flex;
   gap: var(--space-xs);
-  background-color: var(--color-bg);
+  background-color: var(--color-surface);
   padding: var(--space-xs);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(92, 56, 40, 0.1);
 }
 
 .mode-tab {
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
-  font-weight: 500;
+  font-weight: 600;
   padding: var(--space-xs) var(--space-md);
-  border: none;
-  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
   background-color: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .mode-tab:hover {
   color: var(--color-text);
+  background-color: rgba(92, 56, 40, 0.06);
 }
 
 .mode-tab.is-active {
-  background-color: var(--color-surface);
+  background-color: var(--color-card);
   color: var(--color-text);
+  box-shadow: 0 1px 6px rgba(92, 56, 40, 0.1);
+}
+
+/* Active tab tinted per mode */
+#app[data-mode="work"] .mode-tab#tab-work.is-active {
+  color: var(--color-work);
+  border-color: rgba(160, 97, 74, 0.25);
+}
+
+#app[data-mode="break"] .mode-tab#tab-break.is-active {
+  color: var(--color-break);
+  border-color: rgba(90, 143, 106, 0.25);
+}
+
+#app[data-mode="long-break"] .mode-tab#tab-long-break.is-active {
+  color: var(--color-long-break);
+  border-color: rgba(138, 122, 170, 0.25);
 }
 
 .mode-tab:focus-visible {
@@ -254,7 +269,7 @@ body {
 .btn {
   font-family: var(--font-body);
   font-size: var(--font-size-md);
-  font-weight: 500;
+  font-weight: 600;
   padding: var(--space-sm) var(--space-lg);
   border: 1px solid transparent;
   border-radius: var(--radius-md);
@@ -274,7 +289,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #7a4c35;
+  background-color: #4a2c1e;
 }
 
 /* Secondary button — subdued outline */
@@ -287,7 +302,7 @@ body {
 .btn-secondary:hover {
   border-color: var(--color-text);
   color: var(--color-text);
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(92, 56, 40, 0.1);
 }
 
 /* Icon button (settings toggle) — square padding, inherits btn-secondary */
@@ -396,6 +411,7 @@ body {
 
 .setting-input:hover {
   border-color: var(--color-text);
+  background-color: #f5ede3;
 }
 
 .setting-input:focus-visible {
@@ -427,7 +443,7 @@ body {
   gap: var(--space-sm);
 }
 
-.modal-actions .btn:disabled {
+.btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -440,6 +456,8 @@ body {
   padding: var(--space-lg);
   background-color: var(--color-card);
   border-radius: var(--radius-lg);
+  border: 1px solid rgba(92, 56, 40, 0.07);
+  box-shadow: 0 2px 16px rgba(92, 56, 40, 0.07);
   min-width: 16rem;
 }
 
@@ -504,6 +522,7 @@ body {
 
 .task-input:hover {
   border-color: var(--color-text);
+  background-color: #f5ede3;
 }
 
 .task-input:focus-visible {
@@ -526,21 +545,21 @@ body {
   justify-content: space-between;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  background-color: var(--color-bg);
+  background-color: #f0e8dc;
   border-radius: var(--radius-md);
   transition: background-color 0.2s ease;
 }
 
 .task-item:hover {
-  background-color: #f0e6d5;
+  background-color: #e8dccf;
 }
 
 .task-item.is-done {
-  background-color: #ede5d8;
+  background-color: #d8e8d8;
 }
 
 .task-item.is-done:hover {
-  background-color: #e5dace;
+  background-color: #cce0cc;
 }
 
 .task-checkbox {
