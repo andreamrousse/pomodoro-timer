@@ -4,32 +4,101 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pomodoro Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="./script.js" defer></script>
   </head>
   <body>
     <div id="app" data-mode="work">
+      <div class="app-title">
+        <span class="app-title-icon">🍅</span>
+        <div class="app-title-text">
+          <h1 class="app-title-name">Pomodorino</h1>
+        </div>
+      </div>
+      <div class="card-stack">
       <section class="timer" aria-label="Pomodoro timer">
+        <div class="mode-tabs" role="tablist" aria-label="Timer mode">
+          <button type="button" class="mode-tab is-active" id="tab-work" role="tab" aria-selected="true">Pomodoro</button>
+          <button type="button" class="mode-tab" id="tab-break" role="tab" aria-selected="false">Short Break</button>
+          <button type="button" class="mode-tab" id="tab-long-break" role="tab" aria-selected="false">Long Break</button>
+        </div>
         <p class="mode-indicator" id="mode-indicator">Work</p>
         <time class="time-display" id="time-display" datetime="PT25M00S">25:00</time>
         <div class="controls">
           <button type="button" class="btn btn-primary" id="start-pause-btn">Start</button>
           <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
+          <button type="button" class="btn btn-secondary btn-icon" id="settings-toggle-btn" aria-label="Toggle settings" aria-expanded="false"><i data-lucide="settings"></i></button>
+        </div>
+        <div class="session-tracker">
+          <div class="session-dots" id="session-dots" aria-label="Session progress"></div>
+          <p class="session-total" id="session-total">0 sessions</p>
         </div>
       </section>
-      <section class="settings-panel" aria-label="Timer settings">
-        <h2 class="settings-title">Settings</h2>
-        <div class="setting">
-          <label class="setting-label" for="work-duration-input">Work (minutes)</label>
-          <input class="setting-input" type="number" id="work-duration-input"
-                 min="1" max="60" value="25">
+      <section class="task-panel" aria-label="Task list">
+        <div class="task-panel-header">
+          <h2 class="task-panel-title">Tasks</h2>
+          <div class="task-counts">
+            <span class="task-count task-count--pending" id="task-count-pending" hidden>0 pending</span>
+            <span class="task-count task-count--done" id="task-count-done" hidden>0 done</span>
+          </div>
         </div>
-        <div class="setting">
-          <label class="setting-label" for="break-duration-input">Break (minutes)</label>
-          <input class="setting-input" type="number" id="break-duration-input"
-                 min="1" max="60" value="5">
+        <div class="task-input-row">
+          <input class="task-input" type="text" id="task-input"
+                 placeholder="Add a task…" maxlength="80">
+          <button type="button" class="btn btn-primary" id="add-task-btn">Add</button>
         </div>
+        <ul class="task-list" id="task-list"></ul>
       </section>
+      </div>
+    </div>
+    <div class="modal-overlay" id="settings-modal" role="dialog" aria-modal="true" aria-label="Timer settings" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Settings</h2>
+          <button type="button" class="btn btn-icon modal-close-btn" id="modal-x-btn" aria-label="Close settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </div>
+        <section class="settings-panel" aria-label="Timer settings">
+          <div class="setting-group">
+            <div class="setting">
+              <label class="setting-label" for="work-duration-input">Work (minutes)</label>
+              <input class="setting-input" type="number" id="work-duration-input"
+                     min="1" max="60" value="25">
+            </div>
+            <p class="setting-error" id="work-duration-error" hidden>Enter a number between 1 and 60.</p>
+          </div>
+          <div class="setting-group">
+            <div class="setting">
+              <label class="setting-label" for="break-duration-input">Short Break (minutes)</label>
+              <input class="setting-input" type="number" id="break-duration-input"
+                     min="1" max="60" value="5">
+            </div>
+            <p class="setting-error" id="break-duration-error" hidden>Enter a number between 1 and 60.</p>
+          </div>
+          <div class="setting-group">
+            <div class="setting">
+              <label class="setting-label" for="long-break-duration-input">Long Break (minutes)</label>
+              <input class="setting-input" type="number" id="long-break-duration-input"
+                     min="1" max="60" value="15">
+            </div>
+            <p class="setting-error" id="long-break-duration-error" hidden>Enter a number between 1 and 60.</p>
+          </div>
+          <div class="setting">
+            <label class="setting-label" for="auto-switch-toggle">Auto-switch modes</label>
+            <label class="toggle" aria-label="Auto-switch modes">
+              <input type="checkbox" id="auto-switch-toggle" checked>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </section>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" id="settings-close-btn" aria-label="Close settings">Done</button>
+          <button type="button" class="btn btn-secondary" id="reset-defaults-btn" disabled>Back to default</button>
+        </div>
+      </div>
     </div>
   </body>
 </html>

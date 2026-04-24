@@ -1,12 +1,15 @@
 :root {
-  /* Colors — dark theme */
-  --color-bg: #0f1115;
-  --color-surface: #1c1d25;
-  --color-text: #f5f5f7;
-  --color-text-muted: #9ca0ad;
-  --color-work: #ef5350;
-  --color-break: #34d399;
-  --color-accent: #60a5fa;
+  /* Colors — warm cream theme */
+  --color-bg: #fdf6ee;
+  --color-surface: #f5ebe0;
+  --color-card: #faf5f0;
+  --color-text: #3b2f2f;
+  --color-text-muted: #9e8a78;
+  --color-work: #a0614a;
+  --color-break: #5a8f6a;
+  --color-long-break: #8a7aaa;
+  --color-accent: #7d9aaa;
+  --color-btn: #5c3828;
 
   /* Spacing — xs → xl, 4px base */
   --space-xs: 0.25rem;
@@ -16,8 +19,8 @@
   --space-xl: 2.5rem;
 
   /* Typography */
-  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-body: "Nunito", system-ui, -apple-system, sans-serif;
+  --font-mono: "Nunito", system-ui, -apple-system, sans-serif;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
@@ -63,6 +66,43 @@ body {
   gap: var(--space-lg);
 }
 
+/* App title */
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: left;
+}
+
+.app-title-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(160, 97, 74, 0.25));
+}
+
+.app-title-name {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.app-title-sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin-top: 0.1rem;
+}
+
+/* Card stack — stretches all child cards to the same width */
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-lg);
+}
+
 /* Timer card */
 .timer {
   display: flex;
@@ -70,9 +110,45 @@ body {
   align-items: center;
   gap: var(--space-lg);
   padding: var(--space-xl);
-  background-color: var(--color-surface);
+  background-color: var(--color-card);
   border-radius: var(--radius-lg);
   min-width: 16rem;
+}
+
+/* Mode tabs */
+.mode-tabs {
+  display: flex;
+  gap: var(--space-xs);
+  background-color: var(--color-bg);
+  padding: var(--space-xs);
+  border-radius: var(--radius-md);
+}
+
+.mode-tab {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mode-tab:hover {
+  color: var(--color-text);
+}
+
+.mode-tab.is-active {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.mode-tab:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 /* Mode indicator */
@@ -84,7 +160,65 @@ body {
   transition: color 0.4s ease;
 }
 
+/* Session tracker */
+.session-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+}
+
+.session-dots {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.session-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background-color: var(--color-text-muted);
+  opacity: 0.3;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.session-dot.is-complete {
+  opacity: 1;
+}
+
+#app[data-mode="work"] .session-dot.is-complete,
+#app[data-mode="break"] .session-dot.is-complete {
+  background-color: var(--color-work);
+}
+
+#app[data-mode="long-break"] .session-dot.is-complete {
+  background-color: var(--color-long-break);
+}
+
+.session-total {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+}
+
 /* Mode-based accents — driven by data-mode on #app */
+#app[data-mode="work"] {
+  background-color: #faede9;
+  transition: background-color 0.4s ease;
+}
+
+#app[data-mode="break"] {
+  background-color: #e9f4ee;
+  transition: background-color 0.4s ease;
+}
+
+#app[data-mode="long-break"] {
+  background-color: #eeecf6;
+  transition: background-color 0.4s ease;
+}
+
 #app[data-mode="work"] .mode-indicator,
 #app[data-mode="work"] .time-display {
   color: var(--color-work);
@@ -93,6 +227,11 @@ body {
 #app[data-mode="break"] .mode-indicator,
 #app[data-mode="break"] .time-display {
   color: var(--color-break);
+}
+
+#app[data-mode="long-break"] .mode-indicator,
+#app[data-mode="long-break"] .time-display {
+  color: var(--color-long-break);
 }
 
 /* Time display */
@@ -130,12 +269,12 @@ body {
 
 /* Primary button — accent fill */
 .btn-primary {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
+  background-color: var(--color-btn);
+  color: #fdf6ee;
 }
 
 .btn-primary:hover {
-  background-color: #93c5fd;
+  background-color: #7a4c35;
 }
 
 /* Secondary button — subdued outline */
@@ -151,23 +290,83 @@ body {
   background-color: rgba(255, 255, 255, 0.04);
 }
 
-/* Settings panel */
+/* Icon button (settings toggle) — square padding, inherits btn-secondary */
+.btn-icon {
+  padding: var(--space-sm);
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  display: block;
+}
+
+.btn-icon.is-active {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* Settings modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  z-index: 100;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  width: 100%;
+  max-width: 22rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.modal-close-btn {
+  padding: var(--space-xs);
+  line-height: 1;
+  color: var(--color-text);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.modal-close-btn:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-muted);
+}
+
+/* Settings panel (inside modal) */
 .settings-panel {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  padding: var(--space-lg);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  min-width: 16rem;
-}
-
-.settings-title {
-  font-size: var(--font-size-md);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 600;
 }
 
 .setting {
@@ -205,6 +404,259 @@ body {
   border-color: var(--color-accent);
 }
 
+.setting-input.is-invalid {
+  border-color: var(--color-work);
+  color: var(--color-work);
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.setting-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-work);
+  padding-left: var(--space-xs);
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.modal-actions .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Task panel */
+.task-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--color-card);
+  border-radius: var(--radius-lg);
+  min-width: 16rem;
+}
+
+.task-panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.task-panel-title {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.task-counts {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.task-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.03em;
+}
+
+.task-count--pending {
+  color: var(--color-btn);
+  background-color: rgba(92, 56, 40, 0.12);
+}
+
+.task-count--done {
+  color: var(--color-break);
+  background-color: rgba(90, 143, 106, 0.12);
+}
+
+.task-input-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.task-input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-text-muted);
+  border-radius: var(--radius-md);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: border-color 0.15s ease;
+}
+
+.task-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.task-input:hover {
+  border-color: var(--color-text);
+}
+
+.task-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.task-item:hover {
+  background-color: #f0e6d5;
+}
+
+.task-item.is-done {
+  background-color: #ede5d8;
+}
+
+.task-item.is-done:hover {
+  background-color: #e5dace;
+}
+
+.task-checkbox {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+
+.task-checkbox.is-checked {
+  color: var(--color-btn);
+}
+
+.task-checkbox:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.task-checkbox svg {
+  display: block;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.task-item-text {
+  flex: 1;
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  overflow-wrap: break-word;
+  min-width: 0;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+.task-item-text.is-done {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.task-remove-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 var(--space-xs);
+  transition: color 0.15s ease;
+}
+
+.task-remove-btn:hover {
+  color: var(--color-work);
+}
+
+.task-remove-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 2.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-text-muted);
+  border-radius: var(--radius-pill);
+  transition: background-color 0.2s ease;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--color-text);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.toggle input:checked + .toggle-track {
+  background-color: var(--color-break);
+}
+
+.toggle input:checked + .toggle-track::after {
+  transform: translateX(1rem);
+}
+
+.toggle input:focus-visible + .toggle-track {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 /* Animations */
 @keyframes flash {
   0%   { background-color: var(--color-bg); }
@@ -214,4 +666,15 @@ body {
 
 body.flash {
   animation: flash 0.6s ease-out;
+}
+
+@keyframes mode-switch {
+  0%   { opacity: 1;   transform: scale(1); }
+  40%  { opacity: 0.3; transform: scale(0.97); }
+  60%  { opacity: 0.3; transform: scale(0.97); }
+  100% { opacity: 1;   transform: scale(1); }
+}
+
+.timer.is-switching {
+  animation: mode-switch 0.45s ease;
 }

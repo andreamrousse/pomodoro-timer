@@ -21,4 +21,8 @@
 
 ## Could have
 - music sound when the time is running 
-- 
+- Session tracking
+- Persist with localStorage
+- Long break after four pomodoros
+- Keyboard shortcuts
+
