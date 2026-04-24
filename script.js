@@ -1,6 +1,12 @@
-let workDuration = 25 * 60;
-let breakDuration = 5 * 60;
-let longBreakDuration = 15 * 60;
+const DEFAULT_WORK_MIN   = 25;
+const DEFAULT_BREAK_MIN  = 5;
+const DEFAULT_LONG_MIN   = 15;
+const SESSIONS_PER_CYCLE = 4;   // dots shown + long-break trigger
+const MODE_TRANSITION_MS = 200; // fires at the darkest point of the mode-switch CSS fade (0.45s)
+
+let workDuration = DEFAULT_WORK_MIN * 60;
+let breakDuration = DEFAULT_BREAK_MIN * 60;
+let longBreakDuration = DEFAULT_LONG_MIN * 60;
 
 let timeRemaining = workDuration;
 let isRunning = false;
@@ -105,17 +111,19 @@ function render() {
   activeTab.classList.add('is-active');
   activeTab.setAttribute('aria-selected', 'true');
 
-  const cyclePosition = sessionCount % 4;
+  // tracks how many sessions have been completed within the current cycle of SESSIONS_PER_CYCLE
+  const completedInCycle = sessionCount % SESSIONS_PER_CYCLE;
   sessionDotsEl.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < SESSIONS_PER_CYCLE; i++) {
     const dot = document.createElement('span');
-    dot.className = 'session-dot' + (i < cyclePosition ? ' is-complete' : '');
+    dot.className = 'session-dot' + (i < completedInCycle ? ' is-complete' : '');
     dot.setAttribute('aria-hidden', 'true');
     sessionDotsEl.appendChild(dot);
   }
   sessionTotalEl.textContent = sessionCount === 1 ? '1 session' : `${sessionCount} sessions`;
 }
 
+// Short chime: A5 (880 Hz) sine wave, fades from 0.3 gain to near-silence over 0.5 s.
 function playNotification() {
   const ctx = new AudioContext();
   const oscillator = ctx.createOscillator();
@@ -143,13 +151,16 @@ function flashBackground() {
   }, { once: true });
 }
 
+// Wraps any mode-state change in the CSS fade animation.
+// MODE_TRANSITION_MS lines up the state swap with the darkest point of the fade
+// so the new mode label/color appears as the card fades back in.
 function withModeTransition(stateUpdate) {
   const timerEl = document.querySelector('.timer');
   timerEl.classList.add('is-switching');
   setTimeout(() => {
     stateUpdate();
     render();
-  }, 200);
+  }, MODE_TRANSITION_MS);
   timerEl.addEventListener('animationend', () => {
     timerEl.classList.remove('is-switching');
   }, { once: true });
@@ -163,14 +174,17 @@ function setMode(mode) {
   });
 }
 
+// Advances the pomodoro cycle automatically when a session ends (auto-switch).
+// Unlike setMode(), which manually changes mode without counting the session,
+// switchMode() increments sessionCount and decides the next mode from the cycle.
 function switchMode() {
   playNotification();
   flashBackground();
   withModeTransition(() => {
     if (currentMode === 'work') {
       sessionCount += 1;
-      // every 4th completed session triggers a long break
-      currentMode = sessionCount % 4 === 0 ? 'long-break' : 'break';
+      // every SESSIONS_PER_CYCLE completed sessions triggers a long break
+      currentMode = sessionCount % SESSIONS_PER_CYCLE === 0 ? 'long-break' : 'break';
     } else {
       currentMode = 'work';
     }
@@ -251,9 +265,9 @@ function applySettings() {
 
 function updateResetBtn() {
   const isDefault =
-    Number(workInput.value) === 25 &&
-    Number(breakInput.value) === 5 &&
-    Number(longBreakInput.value) === 15;
+    Number(workInput.value) === DEFAULT_WORK_MIN &&
+    Number(breakInput.value) === DEFAULT_BREAK_MIN &&
+    Number(longBreakInput.value) === DEFAULT_LONG_MIN;
   resetDefaultsBtn.disabled = isDefault;
 }
 
@@ -285,12 +299,12 @@ function closeSettings() {
 }
 
 function resetToDefaults() {
-  workDuration = 25 * 60;
-  breakDuration = 5 * 60;
-  longBreakDuration = 15 * 60;
-  workInput.value = 25;
-  breakInput.value = 5;
-  longBreakInput.value = 15;
+  workDuration = DEFAULT_WORK_MIN * 60;
+  breakDuration = DEFAULT_BREAK_MIN * 60;
+  longBreakDuration = DEFAULT_LONG_MIN * 60;
+  workInput.value = DEFAULT_WORK_MIN;
+  breakInput.value = DEFAULT_BREAK_MIN;
+  longBreakInput.value = DEFAULT_LONG_MIN;
   [workInput, breakInput, longBreakInput].forEach(el => el.classList.remove('is-invalid'));
   [workError, breakError, longBreakError].forEach(el => el.hidden = true);
   if (!isRunning) {
