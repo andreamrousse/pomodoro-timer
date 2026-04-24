@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pomodoro Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="./script.js" defer></script>
   </head>
   <body>
@@ -21,7 +25,7 @@
         <div class="controls">
           <button type="button" class="btn btn-primary" id="start-pause-btn">Start</button>
           <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
-          <button type="button" class="btn btn-secondary btn-icon" id="settings-toggle-btn" aria-label="Toggle settings" aria-expanded="false">⚙</button>
+          <button type="button" class="btn btn-secondary btn-icon" id="settings-toggle-btn" aria-label="Toggle settings" aria-expanded="false"><i data-lucide="settings"></i></button>
         </div>
         <div class="session-tracker">
           <div class="session-dots" id="session-dots" aria-label="Session progress"></div>
@@ -29,7 +33,10 @@
         </div>
       </section>
       <section class="task-panel" aria-label="Task list">
-        <h2 class="task-panel-title">Tasks</h2>
+        <div class="task-panel-header">
+          <h2 class="task-panel-title">Tasks</h2>
+          <span class="task-count" id="task-count">0</span>
+        </div>
         <div class="task-input-row">
           <input class="task-input" type="text" id="task-input"
                  placeholder="Add a task…" maxlength="80">
@@ -43,7 +50,7 @@
       <div class="modal">
         <div class="modal-header">
           <h2 class="modal-title">Settings</h2>
-          <button type="button" class="btn btn-icon modal-close-btn" id="settings-close-btn" aria-label="Close settings">✕</button>
+          <button type="button" class="btn btn-icon modal-close-btn" id="modal-x-btn" aria-label="Close settings"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <section class="settings-panel" aria-label="Timer settings">
           <div class="setting-group">
@@ -78,6 +85,10 @@
             </label>
           </div>
         </section>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" id="settings-close-btn" aria-label="Close settings">Done</button>
+          <button type="button" class="btn btn-secondary" id="reset-defaults-btn" disabled>Back to default</button>
+        </div>
       </div>
     </div>
   </body>

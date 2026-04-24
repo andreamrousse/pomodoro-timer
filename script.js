@@ -25,9 +25,12 @@ const allTabs = [tabWork, tabBreak, tabLongBreak];
 const taskInput = document.getElementById('task-input');
 const addTaskBtn = document.getElementById('add-task-btn');
 const taskList = document.getElementById('task-list');
+const taskCount = document.getElementById('task-count');
 const settingsToggleBtn = document.getElementById('settings-toggle-btn');
 const settingsModal = document.getElementById('settings-modal');
 const settingsCloseBtn = document.getElementById('settings-close-btn');
+const modalXBtn = document.getElementById('modal-x-btn');
+const resetDefaultsBtn = document.getElementById('reset-defaults-btn');
 const autoSwitchToggle = document.getElementById('auto-switch-toggle');
 const sessionDotsEl = document.getElementById('session-dots');
 const sessionTotalEl = document.getElementById('session-total');
@@ -138,25 +141,40 @@ function flashBackground() {
   }, { once: true });
 }
 
+function withModeTransition(stateUpdate) {
+  const timerEl = document.querySelector('.timer');
+  timerEl.classList.add('is-switching');
+  setTimeout(() => {
+    stateUpdate();
+    render();
+  }, 200);
+  timerEl.addEventListener('animationend', () => {
+    timerEl.classList.remove('is-switching');
+  }, { once: true });
+}
+
 function setMode(mode) {
   pause();
-  currentMode = mode;
-  timeRemaining = durationFor(currentMode);
-  render();
+  withModeTransition(() => {
+    currentMode = mode;
+    timeRemaining = durationFor(currentMode);
+  });
 }
 
 function switchMode() {
   playNotification();
   flashBackground();
-  if (currentMode === 'work') {
-    sessionCount += 1;
-    // every 4th completed session triggers a long break
-    currentMode = sessionCount % 4 === 0 ? 'long-break' : 'break';
-  } else {
-    currentMode = 'work';
-  }
-  timeRemaining = durationFor(currentMode);
-  saveToStorage();
+  withModeTransition(() => {
+    if (currentMode === 'work') {
+      sessionCount += 1;
+      // every 4th completed session triggers a long break
+      currentMode = sessionCount % 4 === 0 ? 'long-break' : 'break';
+    } else {
+      currentMode = 'work';
+    }
+    timeRemaining = durationFor(currentMode);
+    saveToStorage();
+  });
 }
 
 function tick() {
@@ -165,11 +183,12 @@ function tick() {
       switchMode();
     } else {
       pause();
+      render();
     }
   } else {
     timeRemaining -= 1;
+    render();
   }
-  render();
 }
 
 function start() {
@@ -228,9 +247,17 @@ function applySettings() {
   saveToStorage();
 }
 
-workInput.addEventListener('change', applySettings);
-breakInput.addEventListener('change', applySettings);
-longBreakInput.addEventListener('change', applySettings);
+function updateResetBtn() {
+  const isDefault =
+    Number(workInput.value) === 25 &&
+    Number(breakInput.value) === 5 &&
+    Number(longBreakInput.value) === 15;
+  resetDefaultsBtn.disabled = isDefault;
+}
+
+workInput.addEventListener('change', () => { applySettings(); updateResetBtn(); });
+breakInput.addEventListener('change', () => { applySettings(); updateResetBtn(); });
+longBreakInput.addEventListener('change', () => { applySettings(); updateResetBtn(); });
 autoSwitchToggle.addEventListener('change', () => {
   autoSwitch = autoSwitchToggle.checked;
   saveToStorage();
@@ -244,6 +271,7 @@ function openSettings() {
   settingsModal.removeAttribute('hidden');
   settingsToggleBtn.classList.add('is-active');
   settingsToggleBtn.setAttribute('aria-expanded', 'true');
+  updateResetBtn();
   settingsCloseBtn.focus();
 }
 
@@ -254,8 +282,27 @@ function closeSettings() {
   settingsToggleBtn.focus();
 }
 
+function resetToDefaults() {
+  workDuration = 25 * 60;
+  breakDuration = 5 * 60;
+  longBreakDuration = 15 * 60;
+  workInput.value = 25;
+  breakInput.value = 5;
+  longBreakInput.value = 15;
+  [workInput, breakInput, longBreakInput].forEach(el => el.classList.remove('is-invalid'));
+  [workError, breakError, longBreakError].forEach(el => el.hidden = true);
+  if (!isRunning) {
+    timeRemaining = durationFor(currentMode);
+    render();
+  }
+  saveToStorage();
+  updateResetBtn();
+}
+
 settingsToggleBtn.addEventListener('click', openSettings);
 settingsCloseBtn.addEventListener('click', closeSettings);
+modalXBtn.addEventListener('click', closeSettings);
+resetDefaultsBtn.addEventListener('click', resetToDefaults);
 
 settingsModal.addEventListener('click', (e) => {
   if (e.target === settingsModal) closeSettings();
@@ -288,18 +335,24 @@ function toggleTask(index) {
   saveToStorage();
 }
 
+const SVG_SQUARE = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`;
+const SVG_SQUARE_CHECK = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>`;
+
 function renderTasks() {
   taskList.innerHTML = '';
+  taskCount.textContent = tasks.length;
   tasks.forEach((task, index) => {
     const li = document.createElement('li');
-    li.className = 'task-item';
+    li.className = 'task-item' + (task.done ? ' is-done' : '');
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.className = 'task-checkbox';
-    checkbox.checked = task.done;
+    const checkbox = document.createElement('button');
+    checkbox.type = 'button';
+    checkbox.className = 'task-checkbox' + (task.done ? ' is-checked' : '');
+    checkbox.setAttribute('role', 'checkbox');
+    checkbox.setAttribute('aria-checked', task.done ? 'true' : 'false');
     checkbox.setAttribute('aria-label', 'Mark task complete');
-    checkbox.addEventListener('change', () => toggleTask(index));
+    checkbox.innerHTML = task.done ? SVG_SQUARE_CHECK : SVG_SQUARE;
+    checkbox.addEventListener('click', () => toggleTask(index));
 
     const span = document.createElement('span');
     span.className = 'task-item-text' + (task.done ? ' is-done' : '');
@@ -342,3 +395,4 @@ taskInput.addEventListener('keydown', (e) => {
 loadFromStorage();
 renderTasks();
 render();
+lucide.createIcons();
